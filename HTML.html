@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio do Amor ❤️</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .button {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ddd;
+            transition: 0.3s;
+            display: block;
+            margin: 10px auto;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+        #raspadinhaContainer, #roletaContainer, #finalContainer {
+            display: none;
+        }
+        #coracao {
+            font-size: 50px;
+            animation: pulsar 1s infinite;
+            display: none;
+        }
+        @keyframes pulsar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .scratch-box {
+            width: 300px;
+            height: 300px;
+            background-color: #ddd;
+            position: relative;
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+        .scratch-box canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(200, 200, 200, 0.8);
+        }
+        .scratch-box img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        #premio {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            opacity: 0;
+            animation: aparecerPremio 1s forwards;
+        }
+        @keyframes aparecerPremio {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Página 1: Pergunta -->
+    <div id="pagina1">
+        <h1>Quando foi nosso primeiro beijo? 😘</h1>
+        <div class="container">
+            <button class="button" onclick="verificarResposta('16 de julho de 2024')">16 de julho de 2024 </button>
+            <button class="button" onclick="verificarResposta('10 de junho de 2024')">10 de junho de 2024 </button>
+            <button class="button" onclick="verificarResposta('5 de agosto de 2024')">5 de agosto de 2024 </button>
+        </div>
+    </div>
+
+    <!-- Página 2: Raspadinha -->
+    <div id="raspadinhaContainer">
+        <p>Raspe para ver a surpresa! 🥰</p>
+        <div class="scratch-box" id="scratchBox">
+            <canvas id="canvas"></canvas>
+            <img src="foto.jpg" id="fotoImagem" alt="Foto surpresa">
+        </div>
+        <button class="button" onclick="mostrarRoleta()">Ir para a roleta 🎡</button>
+    </div>
+
+    <!-- Página 3: Contagem Regressiva -->
+    <div id="roletaContainer">
+        <p>Contagem regressiva</p>
+        <button class="button" onclick="contagemRegressiva()">Iniciar contagem</button>
+        <div id="premio"></div>
+        <button class="button" id="botaoFinal" style="display:none;" onclick="mostrarFinal()">Ir para a próxima etapa 💖</button>
+    </div>
+
+    <!-- Página 4: Final -->
+    <div id="finalContainer">
+        <div id="coracao">💖</div>
+        <p>Meu coração pulsa por você! 💓</p>
+        <button class="button" onclick="reiniciar()">Recomeçar</button>
+    </div>
+
+    <script>
+        // Função para verificar a resposta da pergunta
+        function verificarResposta(resposta) {
+            let respostaCorreta = '16 de julho de 2024';
+            if (resposta === respostaCorreta) {
+                alert("Parabéns, acertou!");
+                document.getElementById("pagina1").style.display = "none";
+                document.getElementById("raspadinhaContainer").style.display = "block";
+            } else {
+                alert("Errado, tenta de novo!");
+            }
+        }
+
+        // Variáveis da raspadinha
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let fotoImagem = document.getElementById("fotoImagem");
+
+        canvas.width = 300;
+        canvas.height = 300;
+
+        // Cor da camada de raspagem
+        ctx.fillStyle = "rgba(200, 200, 200, 0.8)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let isRaspando = false;
+
+        // Função para raspar
+        canvas.addEventListener("touchmove", function(event) {
+            if (!isRaspando) {
+                isRaspando = true;
+            }
+            event.preventDefault();
+            let x = event.touches[0].clientX - canvas.offsetLeft;
+            let y = event.touches[0].clientY - canvas.offsetTop;
+            ctx.clearRect(x - 15, y - 15, 30, 30); // Limpa a área onde o dedo passa
+            fotoImagem.style.display = "block"; // Revela a foto quando raspada
+        });
+
+        // Função para ir para a roleta
+        function mostrarRoleta() {
+            document.getElementById("raspadinhaContainer").style.display = "none";
+            document.getElementById("roletaContainer").style.display = "block";
+        }
+
+        // Função para iniciar a contagem regressiva
+        function contagemRegressiva() {
+            let count = 5;
+            let intervalo = setInterval(function() {
+                document.getElementById("premio").innerText = `Contagem regressiva: ${count} segundos`;
+                count--;
+                if (count < 0) {
+                    clearInterval(intervalo);
+                    mostrarResultado();
+                }
+            }, 1000);
+        }
+
+        // Função para mostrar o resultado do prêmio
+        function mostrarResultado() {
+            let premios = ["Beijo + Abraço 💖", "Massagem + Carinho 😘", "Ficar Agarradinhos 🤗", "Filme Juntos 🍿"];
+            let premioEscolhido = premios[Math.floor(Math.random() * premios.length)];
+            document.getElementById("premio").innerText = "Você ganhou: " + premioEscolhido;
+            document.getElementById("premio").style.opacity = 1;
+            document.getElementById("botaoFinal").style.display = "block"; // Exibe o botão para continuar
+        }
+
+        // Função para mostrar a última tela com o coração
+        function mostrarFinal() {
+            document.getElementById("roletaContainer").style.display = "none";
+            document.getElementById("finalContainer").style.display = "block";
+        }
+
+        // Função para reiniciar o jogo
+        function reiniciar() {
+            document.getElementById("finalContainer").style.display = "none";
+            document.getElementById("pagina1").style.display = "block";
+            document.getElementById("premio").style.opacity = 0;
+            document.getElementById("botaoFinal").style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
